@@ -39,12 +39,43 @@ function isMatch(pathname: string, prefixes: string[]) {
   )
 }
 
+/**
+ * Whether the API shares this site's origin.
+ *
+ * Cookies are scoped by host, so when the API lives on another domain the
+ * browser stores its cookies against *that* domain and this proxy can never see
+ * them — every guarded route would redirect to /auth even for a signed-in user,
+ * which is exactly what happened on Vercel with the API deployed separately.
+ *
+ * Ports are irrelevant to cookie scope, which is why `localhost:8000` and
+ * `localhost:3000` behave as one origin in development and this returns true
+ * there.
+ */
+function apiSharesOrigin(request: NextRequest): boolean {
+  const backend = process.env.NEXT_PUBLIC_BACKEND_URL
+
+  if (!backend) return true
+
+  try {
+    return new URL(backend).hostname === request.nextUrl.hostname
+  } catch {
+    return true
+  }
+}
+
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
 
   // The OAuth return lands here with fresh cookies and must be allowed to run
   // its own redirect, or a signed-in user would bounce straight back to /auth.
   if (pathname === "/auth/callback") {
+    return NextResponse.next()
+  }
+
+  // With a cross-origin API there is nothing here to read, so gating on it
+  // would lock everyone out. AuthGuard in the app layout takes over — a beat
+  // slower, but correct. It was always the API's guards that enforced this.
+  if (!apiSharesOrigin(request)) {
     return NextResponse.next()
   }
 
