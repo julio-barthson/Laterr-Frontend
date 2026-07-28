@@ -5,77 +5,88 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
+    /* Brand primary is #008FDB — shared with the Laterr waitlist. */
+    --background: oklch(0.994 0.002 247);
+    --foreground: oklch(0.21 0.016 250);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
+    --card-foreground: oklch(0.21 0.016 250);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.488 0.243 264.376);
-    --primary-foreground: oklch(0.97 0.014 254.604);
-    --secondary: oklch(0.967 0.001 286.375);
-    --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.21 0.016 250);
+    --primary: oklch(0.625 0.152 243.2);
+    --primary-foreground: oklch(0.99 0 0);
+    --secondary: oklch(0.967 0.005 247);
+    --secondary-foreground: oklch(0.29 0.018 250);
+    --muted: oklch(0.967 0.005 247);
+    --muted-foreground: oklch(0.515 0.016 250);
+    --accent: oklch(0.947 0.028 240);
+    --accent-foreground: oklch(0.3 0.058 245);
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
+    --border: oklch(0.909 0.007 250);
+    --input: oklch(0.909 0.007 250);
+    --ring: oklch(0.625 0.152 243.2);
     --chart-1: oklch(0.809 0.105 251.813);
     --chart-2: oklch(0.623 0.214 259.815);
     --chart-3: oklch(0.546 0.245 262.881);
     --chart-4: oklch(0.488 0.243 264.376);
     --chart-5: oklch(0.424 0.199 265.638);
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.546 0.245 262.881);
-    --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    /* The waitlist has no sidebar, so its sidebar tokens are untouched shadcn
+       defaults (indigo). Laterr's app shell does have one — these are pulled
+       onto the brand hue so the nav accent matches --primary. */
+    --sidebar: oklch(0.985 0.002 247);
+    --sidebar-foreground: oklch(0.21 0.016 250);
+    --sidebar-primary: oklch(0.625 0.152 243.2);
+    --sidebar-primary-foreground: oklch(0.99 0 0);
+    --sidebar-accent: oklch(0.947 0.028 240);
+    --sidebar-accent-foreground: oklch(0.3 0.058 245);
+    --sidebar-border: oklch(0.909 0.007 250);
+    --sidebar-ring: oklch(0.625 0.152 243.2);
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.424 0.199 265.638);
-    --primary-foreground: oklch(0.97 0.014 254.604);
-    --secondary: oklch(0.274 0.006 286.033);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
+    /* Primary lifts to L 0.72 so it stays legible on a dark surface; the exact
+       brand #008FDB is too dark against near-black to carry white or dark text. */
+    --background: oklch(0.172 0.014 250);
+    --foreground: oklch(0.968 0.004 247);
+    --card: oklch(0.216 0.016 250);
+    --card-foreground: oklch(0.968 0.004 247);
+    --popover: oklch(0.216 0.016 250);
+    --popover-foreground: oklch(0.968 0.004 247);
+    --primary: oklch(0.72 0.132 243.2);
+    --primary-foreground: oklch(0.16 0.035 245);
+    --secondary: oklch(0.278 0.017 250);
+    --secondary-foreground: oklch(0.968 0.004 247);
+    --muted: oklch(0.268 0.015 250);
+    --muted-foreground: oklch(0.714 0.014 250);
+    --accent: oklch(0.302 0.038 245);
+    --accent-foreground: oklch(0.945 0.02 245);
     --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
+    --border: oklch(0.92 0.01 250 / 12%);
+    --input: oklch(0.92 0.01 250 / 16%);
+    --ring: oklch(0.72 0.132 243.2);
     --chart-1: oklch(0.809 0.105 251.813);
     --chart-2: oklch(0.623 0.214 259.815);
     --chart-3: oklch(0.546 0.245 262.881);
     --chart-4: oklch(0.488 0.243 264.376);
     --chart-5: oklch(0.424 0.199 265.638);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.623 0.214 259.815);
-    --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --sidebar: oklch(0.216 0.016 250);
+    --sidebar-foreground: oklch(0.968 0.004 247);
+    --sidebar-primary: oklch(0.72 0.132 243.2);
+    --sidebar-primary-foreground: oklch(0.16 0.035 245);
+    --sidebar-accent: oklch(0.302 0.038 245);
+    --sidebar-accent-foreground: oklch(0.945 0.02 245);
+    --sidebar-border: oklch(0.92 0.01 250 / 12%);
+    --sidebar-ring: oklch(0.72 0.132 243.2);
 }
 
 @theme inline {
     --font-sans: var(--font-sans);
-    --font-heading: var(--font-heading);
+    /* Points at the sans variable rather than a `--font-heading` of its own:
+       Outfit is now loaded as `--font-sans`, so nothing sets `--font-heading`
+       and every `font-heading` heading would fall back to the browser default.
+       Give headings their own face again by loading a second font in
+       layout.tsx with `variable: "--font-heading"` and changing this back. */
+    --font-heading: var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
