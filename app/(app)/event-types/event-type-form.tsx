@@ -50,9 +50,7 @@ export function EventTypeForm({ eventType, onSubmit, submitLabel }: Props) {
 
   const form = useForm<EventTypeFormValues>({
     resolver: zodResolver(eventTypeSchema),
-    defaultValues: eventType
-      ? toFormValues(eventType)
-      : EVENT_TYPE_DEFAULTS,
+    defaultValues: eventType ? toFormValues(eventType) : EVENT_TYPE_DEFAULTS,
   })
 
   const questions = useFieldArray({
@@ -159,7 +157,9 @@ export function EventTypeForm({ eventType, onSubmit, submitLabel }: Props) {
                     type="number"
                     min={5}
                     max={1440}
-                    {...form.register("durationMinutes", { valueAsNumber: true })}
+                    {...form.register("durationMinutes", {
+                      valueAsNumber: true,
+                    })}
                   />
                   <FieldError errors={[errors.durationMinutes]} />
                 </Field>
@@ -266,7 +266,9 @@ export function EventTypeForm({ eventType, onSubmit, submitLabel }: Props) {
                     type="number"
                     min={0}
                     max={240}
-                    {...form.register("bufferBeforeMin", { valueAsNumber: true })}
+                    {...form.register("bufferBeforeMin", {
+                      valueAsNumber: true,
+                    })}
                   />
                   <FieldError errors={[errors.bufferBeforeMin]} />
                 </Field>
@@ -279,13 +281,15 @@ export function EventTypeForm({ eventType, onSubmit, submitLabel }: Props) {
                     type="number"
                     min={0}
                     max={240}
-                    {...form.register("bufferAfterMin", { valueAsNumber: true })}
+                    {...form.register("bufferAfterMin", {
+                      valueAsNumber: true,
+                    })}
                   />
                   <FieldError errors={[errors.bufferAfterMin]} />
                 </Field>
               </Field>
 
-              <Field orientation="responsive">
+              <Field>
                 <Field data-invalid={Boolean(errors.minNoticeMin)}>
                   <FieldLabel htmlFor="minNoticeMin">
                     Minimum notice (min)
@@ -326,7 +330,9 @@ export function EventTypeForm({ eventType, onSubmit, submitLabel }: Props) {
                   type="number"
                   min={5}
                   max={120}
-                  {...form.register("slotIncrementMin", { valueAsNumber: true })}
+                  {...form.register("slotIncrementMin", {
+                    valueAsNumber: true,
+                  })}
                 />
                 <FieldDescription>
                   How often a start time is offered. Smaller than the duration
@@ -351,15 +357,13 @@ export function EventTypeForm({ eventType, onSubmit, submitLabel }: Props) {
               {questions.fields.map((field, index) => (
                 <div
                   key={field.id}
-                  className="border-border rounded-xl border p-3"
+                  className="rounded-xl border border-border p-3"
                 >
                   <div className="flex items-start gap-2">
-                    <GripVertical className="text-muted-foreground mt-2 h-4 w-4 shrink-0" />
+                    <GripVertical className="mt-2 h-4 w-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0 flex-1 space-y-3">
                       <Field
-                        data-invalid={Boolean(
-                          errors.questions?.[index]?.label
-                        )}
+                        data-invalid={Boolean(errors.questions?.[index]?.label)}
                       >
                         <FieldLabel htmlFor={`questions.${index}.label`}>
                           Question
@@ -425,9 +429,7 @@ export function EventTypeForm({ eventType, onSubmit, submitLabel }: Props) {
                             placeholder="Sales, Support, Something else"
                             {...form.register(`questions.${index}.optionsRaw`)}
                           />
-                          <FieldDescription>
-                            Comma separated.
-                          </FieldDescription>
+                          <FieldDescription>Comma separated.</FieldDescription>
                         </Field>
                       )}
                     </div>

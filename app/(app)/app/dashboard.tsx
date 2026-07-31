@@ -15,7 +15,13 @@ import {
 
 import { AgendaColumn } from "./agenda-column"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { api } from "@/lib/api/client"
 import type {
@@ -26,6 +32,7 @@ import type {
   ScheduleQuota,
 } from "@/lib/api/domain-types"
 import { cn } from "@/lib/utils"
+import { PageHeader } from "../../../components/PageHeader"
 
 const PERSONA_GREETING: Record<PersonaType, string> = {
   individual: "what's next?",
@@ -114,20 +121,18 @@ export function Dashboard() {
 
   return (
     <>
-      <div className="grid gap-4 sm:flex sm:flex-wrap sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-primary text-[11px] tracking-widest uppercase sm:text-xs">
-            {new Date().toLocaleDateString(undefined, {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-          <h1 className="font-heading mt-2 text-3xl leading-tight sm:text-4xl md:text-5xl">
-            Hi{firstName ? ` ${firstName}` : ""},{" "}
-            <span className="text-primary italic">{greetingTail}</span>
-          </h1>
-        </div>
+      <p className="text-[11px] tracking-widest text-primary uppercase sm:text-xs">
+        {new Date().toLocaleDateString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        })}
+      </p>
+      <div className="flex w-full flex-col items-start justify-between gap-2 lg:flex-row lg:items-center">
+        <PageHeader
+          title={`Hi ${firstName ? ` ${firstName}` : ""}`}
+          description={`Welcome back, ${greetingTail}`}
+        />
         <div className="flex flex-wrap gap-2">
           <Button asChild size="lg" className="rounded-full">
             <Link href="/chat">
@@ -143,31 +148,27 @@ export function Dashboard() {
       </div>
 
       {isTrial && (
-        <Card className="border-primary/30 bg-primary/5 mt-6">
+        <Card className="mt-6 border-primary/30 bg-primary/5">
           <CardContent className="grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-between">
             <div className="min-w-0">
-              <p className="font-heading text-lg">You&apos;re on the free trial</p>
-              <p className="text-muted-foreground text-sm">
+              <CardTitle>You&apos;re on the free trial</CardTitle>
+              <CardDescription className="text-muted-foreground">
                 {quota.data
                   ? `${quota.data.used} of ${quota.data.limit} schedules used.`
                   : "1 free schedule to try everything."}{" "}
-                Upgrade any time — cancel any time.
-              </p>
+                Upgrade any time or cancel any time.
+              </CardDescription>
             </div>
-            <Button asChild className="rounded-full">
+            <Button size="lg" asChild>
               <Link href="/pricing">See plans</Link>
             </Button>
           </CardContent>
         </Card>
       )}
 
-      <section className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 md:grid-cols-4">
+      <section className="mt-6 grid grid-cols-2 gap-2 sm:mt-8 md:grid-cols-4">
         <StatCard icon={Clock} label="Upcoming" value={upcoming.length} />
-        <StatCard
-          icon={CalendarPlus}
-          label="Today"
-          value={todayItems.length}
-        />
+        <StatCard icon={CalendarPlus} label="Today" value={todayItems.length} />
         <StatCard
           icon={Inbox}
           label="Booking requests"
@@ -184,19 +185,13 @@ export function Dashboard() {
       <section className="mt-6 grid gap-6 sm:mt-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
+            <CardHeader className="flex items-center justify-between gap-3 border-b">
+              <CardTitle className="truncate">Your agenda</CardTitle>
+              <Button asChild size="sm" variant="ghost">
+                <Link href="/schedules">View all</Link>
+              </Button>
+            </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="font-heading truncate text-xl sm:text-2xl">
-                  Your agenda
-                </h2>
-                <Link
-                  href="/schedules"
-                  className="text-muted-foreground hover:text-foreground shrink-0 text-sm"
-                >
-                  View all
-                </Link>
-              </div>
-
               <AgendaColumn
                 title="Today"
                 items={todayItems}
@@ -216,14 +211,16 @@ export function Dashboard() {
           </Card>
 
           <Card>
+            <CardHeader className="border-b">
+              <CardTitle>Payments coming up</CardTitle>
+            </CardHeader>
             <CardContent className="space-y-4">
-              <h2 className="font-heading text-xl">Payments coming up</h2>
               {pendingPayments.length === 0 ? (
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm text-muted-foreground">
                   No payments scheduled.
                 </p>
               ) : (
-                <ul className="divide-border/60 divide-y">
+                <ul className="divide-y divide-border/60">
                   {pendingPayments.map((payment) => (
                     <li
                       key={payment.id}
@@ -233,7 +230,7 @@ export function Dashboard() {
                         <p className="truncate text-sm font-medium">
                           {payment.title}
                         </p>
-                        <p className="text-muted-foreground text-xs">
+                        <p className="text-xs text-muted-foreground">
                           {payment.recipient ?? "—"} ·{" "}
                           {new Date(payment.startsAt).toLocaleString()}
                         </p>
@@ -250,23 +247,28 @@ export function Dashboard() {
         </div>
 
         <Card className="h-fit">
+          <CardHeader className="border-b">
+            <CardTitle>New booking requests</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-4">
-            <h2 className="font-heading text-2xl">New booking requests</h2>
             {pendingRequests.length === 0 ? (
-              <p className="text-muted-foreground text-sm">
+              <p className="text-sm text-muted-foreground">
                 No pending requests.
               </p>
             ) : (
               <ul className="space-y-3">
                 {pendingRequests.slice(0, 5).map((request) => (
-                  <li key={request.id} className="border-border rounded-xl border p-3">
+                  <li
+                    key={request.id}
+                    className="rounded-xl border border-border p-3"
+                  >
                     <p className="truncate text-sm font-medium">
                       {request.guestName}
                     </p>
-                    <p className="text-muted-foreground truncate text-xs">
+                    <p className="truncate text-xs text-muted-foreground">
                       {request.guestEmail}
                     </p>
-                    <p className="text-muted-foreground mt-1 text-xs">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       Prefers {new Date(request.preferredAt).toLocaleString()}
                     </p>
                   </li>
@@ -297,12 +299,12 @@ function StatCard({
   const inner = (
     <Card className={cn(href && "transition-colors hover:border-primary/40")}>
       <CardContent className="flex items-center gap-3">
-        <span className="bg-primary/10 text-primary grid h-10 w-10 shrink-0 place-items-center rounded-xl">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
           <Icon className="h-5 w-5" />
         </span>
         <div className="min-w-0">
           <p className="font-heading text-2xl leading-none">{value}</p>
-          <p className="text-muted-foreground truncate text-xs">{label}</p>
+          <p className="truncate text-xs text-muted-foreground">{label}</p>
         </div>
       </CardContent>
     </Card>

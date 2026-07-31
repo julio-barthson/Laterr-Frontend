@@ -4,7 +4,12 @@ import Link from "next/link"
 import { ArrowRight, Clock, MapPin } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { LOCATION_LABELS } from "@/lib/api/schedule-types"
 import { usePublicHost } from "@/lib/hooks/use-public-booking"
@@ -28,7 +33,7 @@ export function HostPage({ username }: { username: string }) {
       <Card className="mx-auto max-w-md">
         <CardContent className="py-10 text-center">
           <h1 className="font-heading text-xl">No such page</h1>
-          <p className="text-muted-foreground mt-2 text-sm">
+          <p className="mt-2 text-sm text-muted-foreground">
             We couldn&apos;t find anyone at @{username}.
           </p>
         </CardContent>
@@ -52,20 +57,20 @@ export function HostPage({ username }: { username: string }) {
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <h1 className="font-heading truncate text-2xl sm:text-3xl">
+          <h1 className="truncate font-heading text-2xl sm:text-3xl">
             {host.displayName ?? `@${host.username}`}
           </h1>
-          <p className="text-muted-foreground text-sm">@{host.username}</p>
+          <p className="text-sm text-muted-foreground">@{host.username}</p>
         </div>
       </header>
 
       {eventTypes.length === 0 ? (
         <Card className="mt-6">
           <CardContent className="py-10 text-center">
-            <p className="font-heading text-lg">Nothing bookable right now</p>
-            <p className="text-muted-foreground mt-1 text-sm">
+            <CardTitle>Nothing bookable right now</CardTitle>
+            <CardDescription className="mt-1 text-muted-foreground">
               This host hasn&apos;t published any event types yet.
-            </p>
+            </CardDescription>
           </CardContent>
         </Card>
       ) : (
@@ -76,7 +81,7 @@ export function HostPage({ username }: { username: string }) {
                 href={`/book/${host.username}/${eventType.slug}`}
                 className="block"
               >
-                <Card className="hover:border-primary/40 transition-colors">
+                <Card className="transition-colors hover:border-primary/40">
                   <CardContent className="flex items-center gap-4">
                     <span
                       aria-hidden
@@ -84,15 +89,15 @@ export function HostPage({ username }: { username: string }) {
                       style={{ backgroundColor: eventType.color }}
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="font-heading truncate text-lg">
+                      <p className="truncate font-heading text-lg">
                         {eventType.name}
                       </p>
                       {eventType.description && (
-                        <p className="text-muted-foreground mt-0.5 line-clamp-2 text-sm">
+                        <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
                           {eventType.description}
                         </p>
                       )}
-                      <p className="text-muted-foreground mt-1 flex flex-wrap items-center gap-3 text-xs">
+                      <p className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3.5 w-3.5" />
                           {formatDuration(eventType.durationMinutes)}
@@ -103,7 +108,7 @@ export function HostPage({ username }: { username: string }) {
                         </span>
                       </p>
                     </div>
-                    <ArrowRight className="text-muted-foreground h-4 w-4 shrink-0" />
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
                   </CardContent>
                 </Card>
               </Link>

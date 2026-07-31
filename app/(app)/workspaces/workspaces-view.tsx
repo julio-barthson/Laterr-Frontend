@@ -50,10 +50,12 @@ import {
   useTeamsAccess,
   useWorkspaces,
 } from "@/lib/hooks/use-workspaces"
+import { PageHeader } from "@/components/PageHeader"
 
 const ROLE_TONE: Record<string, string> = {
   owner: "bg-primary/15 text-primary border-primary/30",
-  admin: "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:text-amber-400",
+  admin:
+    "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:text-amber-400",
   member: "",
 }
 
@@ -66,17 +68,14 @@ export function WorkspacesView() {
 
   return (
     <div className="space-y-6">
-      {/* Outside the loading gate: the first paint should be labelled, not a
-          page of unnamed skeletons. */}
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-heading text-3xl">Teams</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Shared workspaces for a family or an organisation.
-          </p>
-        </div>
+      <div className="flex w-full flex-col items-start justify-between gap-2 lg:flex-row lg:items-center">
+        <PageHeader
+          title="Teams"
+          back
+          description="Shared workspaces for a family or an organisation."
+        />
         {allowed && <CreateWorkspaceDialog />}
-      </header>
+      </div>
 
       {access.isLoading ? (
         <Skeleton className="h-40 w-full rounded-xl" />
@@ -108,12 +107,12 @@ export function WorkspacesView() {
                         className="min-w-0 flex-1"
                       >
                         <div className="flex items-center gap-2">
-                          <Building2 className="text-muted-foreground h-4 w-4 shrink-0" />
+                          <Building2 className="h-4 w-4 shrink-0 text-muted-foreground" />
                           <span className="truncate font-medium">
                             {workspace.name}
                           </span>
                         </div>
-                        <p className="text-muted-foreground mt-1 text-xs capitalize">
+                        <p className="mt-1 text-xs text-muted-foreground capitalize">
                           {workspace.kind} ·{" "}
                           {workspace.memberCount === 1
                             ? "1 member"
@@ -133,10 +132,7 @@ export function WorkspacesView() {
                         <Link href={`/workspaces/${workspace.id}`}>Manage</Link>
                       </Button>
                       {!workspace.isOwner && (
-                        <LeaveButton
-                          id={workspace.id}
-                          name={workspace.name}
-                        />
+                        <LeaveButton id={workspace.id} name={workspace.name} />
                       )}
                     </div>
                   </CardContent>
@@ -269,7 +265,7 @@ function PendingInvites({
     <Card className="border-primary/30 bg-primary/5">
       <CardContent className="space-y-3">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <Ticket className="text-primary h-4 w-4" />
+          <Ticket className="h-4 w-4 text-primary" />
           {invites.length === 1
             ? "You have an invitation"
             : `You have ${invites.length} invitations`}
@@ -282,10 +278,7 @@ function PendingInvites({
           >
             <div className="min-w-0">
               <span className="font-medium">{invite.workspace.name}</span>
-              <span className="text-muted-foreground">
-                {" "}
-                · as {invite.role}
-              </span>
+              <span className="text-muted-foreground"> · as {invite.role}</span>
             </div>
             <Button
               size="sm"

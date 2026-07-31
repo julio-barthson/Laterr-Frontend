@@ -4,7 +4,12 @@ import Link from "next/link"
 
 import { EventTypeForm } from "../event-type-form"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useEventType, useUpdateEventType } from "@/lib/hooks/use-event-types"
 
@@ -26,10 +31,10 @@ export function EditEventType({ id }: { id: string }) {
     return (
       <Card>
         <CardContent className="py-10 text-center">
-          <p className="font-heading text-lg">Event type not found</p>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <CardTitle>Event type not found</CardTitle>
+          <CardDescription className="mt-1 text-muted-foreground">
             It may have been deleted.
-          </p>
+          </CardDescription>
           <Button asChild variant="outline" className="mt-4">
             <Link href="/event-types">Back to events</Link>
           </Button>
@@ -42,9 +47,9 @@ export function EditEventType({ id }: { id: string }) {
     <>
       <header className="mb-6">
         <h1 className="font-heading text-3xl sm:text-4xl">{eventType.name}</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Changes apply to new bookings. Existing ones keep the details they were
-          made with.
+        <p className="mt-1 text-sm text-muted-foreground">
+          Changes apply to new bookings. Existing ones keep the details they
+          were made with.
         </p>
       </header>
 

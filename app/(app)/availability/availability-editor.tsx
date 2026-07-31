@@ -5,12 +5,14 @@ import { Loader2, Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import {
-  Field,
-  FieldDescription,
-  FieldLabel,
-} from "@/components/ui/field"
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -30,6 +32,7 @@ import {
   timeToMinutes,
   timezoneOptions,
 } from "@/lib/time"
+import { PageHeader } from "@/components/PageHeader"
 
 /** One editable window. Times are strings so a half-typed value is allowed. */
 interface DraftWindow {
@@ -48,16 +51,13 @@ export function AvailabilityEditor() {
 
   return (
     <>
-      {/* Outside the loading gate on purpose: the page title and description
-          are static, so hiding them behind the fetch would leave the first
-          paint as unlabelled skeletons. */}
-      <header>
-        <h1 className="font-heading text-3xl sm:text-4xl">Availability</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          When invitees can book you. Times are in your schedule&apos;s
-          timezone.
-        </p>
-      </header>
+      <PageHeader
+        back
+        title={"Avalability"}
+        description={
+          "When invitees can book you. Times are in your schedule’s timezone."
+        }
+      />
 
       {isLoading || !data ? (
         <div className="mt-6 space-y-4">
@@ -186,7 +186,9 @@ function WeeklyHoursEditor({
       // The API also rejects overlaps, which the client does not pre-check —
       // surfacing its message verbatim is more useful than a generic one.
       toast.error(
-        error instanceof ApiError ? error.message : "Could not save availability"
+        error instanceof ApiError
+          ? error.message
+          : "Could not save availability"
       )
     }
   }
@@ -235,15 +237,19 @@ function WeeklyHoursEditor({
       </Card>
 
       <Card className="mt-4">
+        <CardHeader className="flex flex-wrap items-center justify-between gap-2 border-b">
+          <CardTitle>Weekly hours</CardTitle>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={copyMondayToWeekdays}
+          >
+            Copy Monday to Tue–Fri
+          </Button>
+        </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-heading text-xl">Weekly hours</h2>
-            <Button type="button" variant="ghost" size="sm" onClick={copyMondayToWeekdays}>
-              Copy Monday to Tue–Fri
-            </Button>
-          </div>
-
-          <div className="divide-border/60 divide-y">
+          <div className="divide-y divide-border/60">
             {WEEKDAY_LABELS.map((label, weekday) => {
               const windows = draft[weekday] ?? []
 
@@ -271,7 +277,7 @@ function WeeklyHoursEditor({
 
                   <div className="flex-1 space-y-2">
                     {windows.length === 0 ? (
-                      <p className="text-muted-foreground text-sm">
+                      <p className="text-sm text-muted-foreground">
                         Unavailable
                       </p>
                     ) : (
@@ -291,7 +297,7 @@ function WeeklyHoursEditor({
                               })
                             }
                           />
-                          <span className="text-muted-foreground text-sm">
+                          <span className="text-sm text-muted-foreground">
                             to
                           </span>
                           <Input
@@ -335,7 +341,6 @@ function WeeklyHoursEditor({
           </div>
         </CardContent>
       </Card>
-
     </>
   )
 }
@@ -394,14 +399,14 @@ function DateOverrides({
     <Card className="mt-4">
       <CardContent className="space-y-4">
         <div>
-          <h2 className="font-heading text-xl">Date overrides</h2>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Close a specific day, or open it with different hours. Overrides beat
-            the weekly pattern.
-          </p>
+          <CardTitle>Date overrides</CardTitle>
+          <CardDescription className="mt-1 text-muted-foreground">
+            Close a specific day, or open it with different hours. Overrides
+            beat the weekly pattern.
+          </CardDescription>
         </div>
 
-        <div className="border-border flex flex-wrap items-end gap-3 rounded-xl border p-3">
+        <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border p-3">
           <Field className="w-auto">
             <FieldLabel htmlFor="override-date">Date</FieldLabel>
             <Input
@@ -463,12 +468,12 @@ function DateOverrides({
         </div>
 
         {overrides.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             No overrides. Public pages only ever show today onwards, so past
             dates are never exposed.
           </p>
         ) : (
-          <ul className="divide-border/60 divide-y">
+          <ul className="divide-y divide-border/60">
             {overrides.map((override) => (
               <li
                 key={override.id}
@@ -478,7 +483,7 @@ function DateOverrides({
                   <p className="text-sm font-medium">
                     {formatDateOnly(override.theDate)}
                   </p>
-                  <p className="text-muted-foreground text-xs">
+                  <p className="text-xs text-muted-foreground">
                     {override.isClosed
                       ? "Unavailable all day"
                       : `${minutesToTime(override.startMin ?? 0)} – ${minutesToTime(

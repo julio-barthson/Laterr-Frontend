@@ -6,7 +6,7 @@ import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +30,7 @@ import {
   useSetMeetingUrl,
 } from "@/lib/hooks/use-bookings"
 import { useEventTypes } from "@/lib/hooks/use-event-types"
+import { PageHeader } from "@/components/PageHeader"
 
 const TABS: Array<{ value: MeetingsTab; label: string }> = [
   { value: "upcoming", label: "Upcoming" },
@@ -75,13 +76,12 @@ export function MeetingsView() {
 
   return (
     <>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-heading text-3xl sm:text-4xl">Meetings</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Everything booked through your event links.
-          </p>
-        </div>
+      <div className="flex w-full flex-col items-start justify-between gap-2 lg:flex-row lg:items-center">
+        <PageHeader
+          back
+          title={"Meetings"}
+          description={"Everything booked through your event links"}
+        />
         <Button
           variant="outline"
           onClick={exportCsv}
@@ -94,10 +94,13 @@ export function MeetingsView() {
           )}
           Export CSV
         </Button>
-      </header>
+      </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <Tabs value={tab} onValueChange={(value) => setTab(value as MeetingsTab)}>
+        <Tabs
+          value={tab}
+          onValueChange={(value) => setTab(value as MeetingsTab)}
+        >
           <TabsList>
             {TABS.map((entry) => (
               <TabsTrigger key={entry.value} value={entry.value}>
@@ -131,12 +134,12 @@ export function MeetingsView() {
         {!isLoading && (bookings ?? []).length === 0 && (
           <Card>
             <CardContent className="py-10 text-center">
-              <p className="font-heading text-lg">No meetings here</p>
-              <p className="text-muted-foreground mt-1 text-sm">
+              <CardTitle>No meetings here</CardTitle>
+              <CardDescription className="mt-1 text-muted-foreground">
                 {tab === "upcoming"
                   ? "Nothing booked yet. Share an event link to start taking bookings."
                   : "Nothing matches this filter."}
-              </p>
+              </CardDescription>
             </CardContent>
           </Card>
         )}
@@ -183,7 +186,7 @@ function BookingRow({ booking }: { booking: Booking }) {
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="font-heading truncate text-lg">
+            <p className="truncate font-heading text-lg">
               {booking.inviteeName}
             </p>
             <Badge variant={STATUS_VARIANT[booking.status] ?? "secondary"}>
@@ -191,11 +194,9 @@ function BookingRow({ booking }: { booking: Booking }) {
             </Badge>
           </div>
 
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className="mt-1 text-sm text-muted-foreground">
             {booking.eventType.name} ·{" "}
-            <time dateTime={booking.startsAt}>
-              {start.toLocaleString()}
-            </time>
+            <time dateTime={booking.startsAt}>{start.toLocaleString()}</time>
             {" – "}
             {end.toLocaleTimeString(undefined, {
               hour: "numeric",
@@ -203,7 +204,7 @@ function BookingRow({ booking }: { booking: Booking }) {
             })}
           </p>
 
-          <p className="text-muted-foreground mt-0.5 text-xs">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             {booking.inviteeEmail} · {booking.inviteeTimezone} ·{" "}
             {LOCATION_LABELS[booking.locationType]}
           </p>
@@ -212,7 +213,7 @@ function BookingRow({ booking }: { booking: Booking }) {
             <dl className="mt-2 space-y-1">
               {booking.answers.map((answer) => (
                 <div key={answer.id} className="text-xs">
-                  <dt className="text-muted-foreground inline">
+                  <dt className="inline text-muted-foreground">
                     {answer.question.label}:{" "}
                   </dt>
                   <dd className="inline">{answer.answer ?? "—"}</dd>
@@ -222,7 +223,7 @@ function BookingRow({ booking }: { booking: Booking }) {
           )}
 
           {booking.cancelReason && (
-            <p className="text-muted-foreground mt-2 text-xs italic">
+            <p className="mt-2 text-xs text-muted-foreground italic">
               Cancelled: {booking.cancelReason}
             </p>
           )}

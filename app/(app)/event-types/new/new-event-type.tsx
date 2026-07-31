@@ -1,5 +1,6 @@
 "use client"
 
+import { PageHeader } from "@/components/PageHeader"
 import { EventTypeForm } from "../event-type-form"
 import { useCreateEventType } from "@/lib/hooks/use-event-types"
 
@@ -8,12 +9,11 @@ export function NewEventType() {
 
   return (
     <>
-      <header className="mb-6">
-        <h1 className="font-heading text-3xl sm:text-4xl">New event type</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Set it up once, then share the link.
-        </p>
-      </header>
+      <PageHeader
+        back
+        title={"New Event Type"}
+        description={"Set it up once, then share the link"}
+      />
 
       <EventTypeForm
         onSubmit={(input) => create.mutateAsync(input)}

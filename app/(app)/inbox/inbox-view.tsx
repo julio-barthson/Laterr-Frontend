@@ -22,9 +22,11 @@ import {
   useDeleteBookingRequest,
   useRespondToRequest,
 } from "@/lib/hooks/use-bookings"
+import { PageHeader } from "@/components/PageHeader"
 
 const STATUS_TONE: Record<string, string> = {
-  pending: "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:text-amber-400",
+  pending:
+    "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:text-amber-400",
   accepted:
     "bg-emerald-500/15 text-emerald-600 border-emerald-500/30 dark:text-emerald-400",
   declined: "",
@@ -38,13 +40,11 @@ export function InboxView() {
 
   return (
     <div className="space-y-6">
-      {/* Outside the loading gate so the first paint is labelled. */}
-      <header>
-        <h1 className="font-heading text-3xl">Booking requests</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          People asking for a slice of your time.
-        </p>
-      </header>
+      <PageHeader
+        back
+        title="Booking Requests"
+        description="People asking for a slice of your time."
+      />
 
       {isLoading ? (
         <div className="space-y-3">
@@ -72,7 +72,7 @@ export function InboxView() {
         <>
           {pending.length > 0 && (
             <section className="space-y-3">
-              <h2 className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
+              <h2 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                 Waiting on you ({pending.length})
               </h2>
               {pending.map((request) => (
@@ -83,7 +83,7 @@ export function InboxView() {
 
           {resolved.length > 0 && (
             <section className="space-y-3">
-              <h2 className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
+              <h2 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                 Handled
               </h2>
               {resolved.map((request) => (
@@ -125,12 +125,12 @@ function RequestCard({ request }: { request: BookingRequest }) {
           <div className="min-w-0">
             <p className="font-medium">
               {request.guestName}
-              <span className="text-muted-foreground font-normal">
+              <span className="font-normal text-muted-foreground">
                 {" "}
                 · {request.guestEmail}
               </span>
             </p>
-            <p className="text-muted-foreground mt-0.5 text-xs">
+            <p className="mt-0.5 text-xs text-muted-foreground">
               Prefers {new Date(request.preferredAt).toLocaleString()}
             </p>
           </div>
@@ -144,7 +144,9 @@ function RequestCard({ request }: { request: BookingRequest }) {
         </div>
 
         {request.message && (
-          <p className="bg-muted/50 rounded-xl p-3 text-sm">{request.message}</p>
+          <p className="rounded-xl bg-muted/50 p-3 text-sm">
+            {request.message}
+          </p>
         )}
 
         <div className="flex flex-wrap items-center gap-2">

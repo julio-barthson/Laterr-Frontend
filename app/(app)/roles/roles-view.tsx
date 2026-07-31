@@ -25,10 +25,7 @@ import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
-import type {
-  RequestableRole,
-  RoleRequestStatus,
-} from "@/lib/api/admin-types"
+import type { RequestableRole, RoleRequestStatus } from "@/lib/api/admin-types"
 import { getErrorMessage } from "@/lib/api/errors"
 import {
   useCancelRoleRequest,
@@ -37,6 +34,7 @@ import {
   useMyRoles,
   useRolesAccess,
 } from "@/lib/hooks/use-roles"
+import { PageHeader } from "@/components/PageHeader"
 
 const ROLE_LABEL: Record<string, string> = {
   admin: "Admin",
@@ -52,7 +50,8 @@ const ROLE_BLURB: Record<RequestableRole, string> = {
 }
 
 const STATUS_TONE: Record<RoleRequestStatus, string> = {
-  pending: "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:text-amber-400",
+  pending:
+    "bg-amber-500/15 text-amber-600 border-amber-500/30 dark:text-amber-400",
   approved:
     "bg-emerald-500/15 text-emerald-600 border-emerald-500/30 dark:text-emerald-400",
   denied: "bg-destructive/15 text-destructive border-destructive/30",
@@ -68,12 +67,11 @@ export function RolesView() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="font-heading text-3xl">Roles</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          What you can do on Laterr, and how to ask for more.
-        </p>
-      </header>
+      <PageHeader
+        back
+        title="Roles"
+        description="What you can do on Laterr, and how to ask for more."
+      />
 
       <Card>
         <CardHeader>
@@ -91,7 +89,7 @@ export function RolesView() {
                 </Badge>
               ))}
               {roles.data?.length === 0 && (
-                <span className="text-muted-foreground text-sm">
+                <span className="text-sm text-muted-foreground">
                   No roles yet.
                 </span>
               )}
@@ -253,7 +251,7 @@ function RequestRow({
           </Badge>
         </div>
         {request.reason && (
-          <p className="text-muted-foreground mt-1 text-xs">{request.reason}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{request.reason}</p>
         )}
         {request.decisionNote && (
           <p className="mt-1 text-xs">
@@ -261,7 +259,7 @@ function RequestRow({
             {request.decisionNote}
           </p>
         )}
-        <p className="text-muted-foreground mt-1 text-xs">
+        <p className="mt-1 text-xs text-muted-foreground">
           Asked {new Date(request.createdAt).toLocaleDateString()}
         </p>
       </div>

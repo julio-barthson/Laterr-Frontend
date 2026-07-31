@@ -26,6 +26,7 @@ import {
   useUsernameAvailable,
 } from "@/lib/hooks/use-profile"
 import { browserTimezone, timezoneOptions } from "@/lib/time"
+import { PageHeader } from "@/components/PageHeader"
 
 const PERSONAS: Array<{ value: PersonaType; label: string; hint: string }> = [
   { value: "individual", label: "Individual", hint: "Just me." },
@@ -43,12 +44,11 @@ export function SettingsView() {
   return (
     <div className="space-y-6">
       {/* Outside the loading gate so the first paint is labelled. */}
-      <header>
-        <h1 className="font-heading text-3xl">Profile</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          How you appear to people booking time with you.
-        </p>
-      </header>
+      <PageHeader
+        title="Profile"
+        description="How you appear to people booking time with you."
+        back
+      />
 
       {isLoading || !profile ? (
         <>
@@ -99,8 +99,7 @@ function DetailsCard({ profile }: { profile: Profile }) {
     usernameChanged && usernameValid ? cleanedUsername : ""
   )
 
-  const taken =
-    usernameChanged && availability.data?.available === false
+  const taken = usernameChanged && availability.data?.available === false
 
   const zones = React.useMemo(() => {
     const options = timezoneOptions()
@@ -137,7 +136,7 @@ function DetailsCard({ profile }: { profile: Profile }) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="border-b">
         <CardTitle>Details</CardTitle>
         <CardDescription>
           Your name and username appear on your public booking page.
@@ -246,9 +245,7 @@ function DetailsCard({ profile }: { profile: Profile }) {
           <Button
             type="submit"
             className="rounded-full"
-            disabled={
-              !dirty || !usernameValid || taken || update.isPending
-            }
+            disabled={!dirty || !usernameValid || taken || update.isPending}
           >
             {update.isPending && (
               <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
@@ -267,7 +264,7 @@ function BookingLinkCard({ profile }: { profile: Profile }) {
   if (!profile.username) {
     return (
       <Card>
-        <CardHeader>
+        <CardHeader className="border-b">
           <CardTitle>Your booking link</CardTitle>
           <CardDescription>
             Pick a username above and your public page appears here.
@@ -282,9 +279,7 @@ function BookingLinkCard({ profile }: { profile: Profile }) {
   async function copy() {
     try {
       // Absolute, because this is meant to be pasted somewhere else.
-      await navigator.clipboard.writeText(
-        `${window.location.origin}${path}`
-      )
+      await navigator.clipboard.writeText(`${window.location.origin}${path}`)
       setCopied(true)
       toast.success("Link copied")
       window.setTimeout(() => setCopied(false), 2000)
@@ -302,7 +297,7 @@ function BookingLinkCard({ profile }: { profile: Profile }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-wrap items-center gap-2">
-        <code className="bg-muted min-w-0 flex-1 truncate rounded-lg px-3 py-2 text-sm">
+        <code className="min-w-0 flex-1 truncate rounded-lg bg-muted px-3 py-3 text-sm">
           {path}
         </code>
         <Button variant="outline" onClick={() => void copy()}>

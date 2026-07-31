@@ -61,10 +61,10 @@ export function SiteHeader() {
             </Button>
           ) : (
             <>
-              <Button asChild variant="ghost" className="hidden sm:inline-flex">
+              <Button size='md' asChild variant="ghost" className="hidden sm:inline-flex">
                 <Link href="/auth">Sign in</Link>
               </Button>
-              <Button asChild className="rounded-full">
+              <Button size='md' asChild className="rounded-full">
                 <Link href="/auth">Get started</Link>
               </Button>
             </>

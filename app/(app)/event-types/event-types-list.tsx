@@ -18,7 +18,12 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { ApiError } from "@/lib/api/errors"
@@ -32,6 +37,7 @@ import {
 import { api } from "@/lib/api/client"
 import { useQuery } from "@tanstack/react-query"
 import type { Profile } from "@/lib/api/domain-types"
+import { PageHeader } from "@/components/PageHeader"
 
 export function EventTypesList() {
   const { data: eventTypes, isLoading } = useEventTypes()
@@ -47,28 +53,29 @@ export function EventTypesList() {
 
   return (
     <>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-heading text-3xl sm:text-4xl">Events</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Reusable meeting templates. Each one gets its own booking link.
-          </p>
-        </div>
+      <div className="flex w-full flex-col items-start justify-between gap-2 lg:flex-row lg:items-center">
+        <PageHeader
+          back
+          title={"Events"}
+          description={
+            "Reusable meeting templates. Each one gets its own booking link."
+          }
+        />
         <Button asChild className="rounded-full">
           <Link href="/event-types/new">
             <Plus className="mr-1.5 h-4 w-4" /> New event type
           </Link>
         </Button>
-      </header>
+      </div>
 
       {!profile?.username && (
-        <Card className="border-primary/30 bg-primary/5 mt-6">
+        <Card className="mt-6 border-primary/30 bg-primary/5">
           <CardContent>
-            <p className="font-heading text-lg">Pick a username first</p>
-            <p className="text-muted-foreground mt-1 text-sm">
+            <CardTitle>Pick a username first</CardTitle>
+            <CardDescription className="mt-1 text-sm text-muted-foreground">
               Booking links are built from your username, so your events
               aren&apos;t reachable until you set one.
-            </p>
+            </CardDescription>
             <Button asChild variant="outline" className="mt-3">
               <Link href="/settings">Open settings</Link>
             </Button>
@@ -85,13 +92,15 @@ export function EventTypesList() {
         {!isLoading && (eventTypes ?? []).length === 0 && (
           <Card>
             <CardContent className="py-10 text-center">
-              <p className="font-heading text-lg">No event types yet</p>
-              <p className="text-muted-foreground mx-auto mt-1 max-w-sm text-sm">
+              <CardTitle>No event types yet</CardTitle>
+              <CardDescription className="mx-auto mt-1 max-w-sm text-muted-foreground">
                 Create one and share the link — invitees pick a time from your
                 availability without emailing back and forth.
-              </p>
+              </CardDescription>
               <Button asChild className="mt-4">
-                <Link href="/event-types/new">Create your first event type</Link>
+                <Link href="/event-types/new">
+                  Create your first event type
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -119,9 +128,7 @@ function EventTypeRow({
   const setActive = useSetEventTypeActive()
   const remove = useDeleteEventType()
 
-  const bookingPath = username
-    ? `/book/${username}/${eventType.slug}`
-    : null
+  const bookingPath = username ? `/book/${username}/${eventType.slug}` : null
 
   return (
     <Card>
@@ -136,7 +143,7 @@ function EventTypeRow({
           <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/event-types/${eventType.id}`}
-              className="font-heading truncate text-lg hover:underline"
+              className="truncate font-heading text-lg hover:underline"
             >
               {eventType.name}
             </Link>
@@ -144,7 +151,7 @@ function EventTypeRow({
             {eventType.isHidden && <Badge variant="outline">Hidden</Badge>}
           </div>
 
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className="mt-1 text-sm text-muted-foreground">
             {eventType.durationMinutes} min ·{" "}
             {LOCATION_LABELS[eventType.locationType]}
             {eventType.capacity > 1 ? ` · up to ${eventType.capacity}` : ""}
@@ -244,7 +251,7 @@ function CopyLinkButton({
 
   return (
     <div className="mt-2 flex flex-wrap items-center gap-2">
-      <code className="bg-muted text-muted-foreground truncate rounded px-2 py-1 text-xs">
+      <code className="truncate rounded bg-muted px-2 py-1 text-xs text-muted-foreground">
         {path}
       </code>
       <Button

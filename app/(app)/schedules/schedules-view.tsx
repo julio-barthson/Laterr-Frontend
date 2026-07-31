@@ -27,7 +27,12 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card"
 import { NativeSelect } from "@/components/ui/native-select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -44,7 +49,6 @@ import {
   useSchedules,
   useSetScheduleStatus,
 } from "@/lib/hooks/use-schedules"
-
 
 const STATUS_TABS: Array<{ value: ScheduleStatus | "all"; label: string }> = [
   { value: "upcoming", label: "Upcoming" },
@@ -78,7 +82,7 @@ export function SchedulesView() {
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-heading text-3xl sm:text-4xl">Schedules</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className="mt-1 text-sm text-muted-foreground">
             Meetings, payments, flights, match days and tasks in one place.
           </p>
         </div>
@@ -116,17 +120,17 @@ export function SchedulesView() {
       </header>
 
       {atLimit && quota && (
-        <Card className="border-primary/30 bg-primary/5 mt-6">
+        <Card className="mt-6 border-primary/30 bg-primary/5">
           <CardContent className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="font-heading text-lg">
+              <CardTitle>
                 You&apos;ve used your {quota.limit} trial schedule
                 {quota.limit === 1 ? "" : "s"}
-              </p>
-              <p className="text-muted-foreground mt-1 text-sm">
+              </CardTitle>
+              <CardDescription className="mt-1 text-muted-foreground">
                 Upgrade for unlimited schedules. Cancelled and completed ones
                 still count toward the trial.
-              </p>
+              </CardDescription>
             </div>
             <Button asChild className="rounded-full">
               <Link href="/pricing">See plans</Link>
@@ -138,9 +142,7 @@ export function SchedulesView() {
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Tabs
           value={status}
-          onValueChange={(value) =>
-            setStatus(value as ScheduleStatus | "all")
-          }
+          onValueChange={(value) => setStatus(value as ScheduleStatus | "all")}
         >
           <TabsList>
             {STATUS_TABS.map((tab) => (
@@ -177,12 +179,12 @@ export function SchedulesView() {
         {!isLoading && (schedules ?? []).length === 0 && (
           <Card>
             <CardContent className="py-10 text-center">
-              <p className="font-heading text-lg">Nothing here</p>
-              <p className="text-muted-foreground mt-1 text-sm">
+              <CardTitle>Nothing here</CardTitle>
+              <CardDescription className="mt-1 text-muted-foreground">
                 {status === "upcoming"
                   ? "No upcoming schedules. Add one, or ask Laterr AI to capture it for you."
                   : "No schedules match this filter."}
-              </p>
+              </CardDescription>
             </CardContent>
           </Card>
         )}
@@ -226,7 +228,7 @@ function ScheduleRow({
   return (
     <Card>
       <CardContent className="flex flex-wrap items-center gap-4">
-        <span className="bg-primary/10 text-primary grid h-10 w-10 shrink-0 place-items-center rounded-xl">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
           <Icon className="h-5 w-5" />
         </span>
 
@@ -237,7 +239,7 @@ function ScheduleRow({
                 post-event check-in lives. Editing has its own control below. */}
             <Link
               href={`/schedules/${schedule.id}`}
-              className="font-heading truncate text-left text-lg hover:underline"
+              className="truncate text-left font-heading text-lg hover:underline"
             >
               {schedule.title}
             </Link>
@@ -250,7 +252,7 @@ function ScheduleRow({
               </Badge>
             )}
           </div>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <p className="mt-1 text-sm text-muted-foreground">
             <time dateTime={schedule.startsAt}>{start.toLocaleString()}</time>
             {schedule.location ? ` · ${schedule.location}` : ""}
             {schedule.recipient ? ` · ${schedule.recipient}` : ""}

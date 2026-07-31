@@ -27,12 +27,15 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { API_BASE_URL } from "@/lib/api/config"
 import { LOCATION_LABELS } from "@/lib/api/schedule-types"
-import { useCancelBooking, useTokenBooking } from "@/lib/hooks/use-public-booking"
+import {
+  useCancelBooking,
+  useTokenBooking,
+} from "@/lib/hooks/use-public-booking"
 import { formatDuration } from "@/lib/time"
 
 export function BookingDetail({ token }: { token: string }) {
@@ -57,7 +60,7 @@ export function BookingDetail({ token }: { token: string }) {
       <Card className="mx-auto max-w-md">
         <CardContent className="py-10 text-center">
           <h1 className="font-heading text-xl">Booking not found</h1>
-          <p className="text-muted-foreground mt-2 text-sm">
+          <p className="mt-2 text-sm text-muted-foreground">
             This link may have expired, or the booking was removed. Check the
             confirmation you were sent.
           </p>
@@ -83,9 +86,7 @@ export function BookingDetail({ token }: { token: string }) {
         <CardContent className="space-y-4">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-muted-foreground text-sm">
-                with {hostName}
-              </p>
+              <p className="text-sm text-muted-foreground">with {hostName}</p>
               <h1 className="font-heading text-2xl">
                 {booking.eventType.name}
               </h1>
@@ -96,32 +97,32 @@ export function BookingDetail({ token }: { token: string }) {
           </div>
 
           {booking.eventType.description && (
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-muted-foreground">
               {booking.eventType.description}
             </p>
           )}
 
           <dl className="space-y-2 text-sm">
             <div className="flex items-start gap-2">
-              <CalendarClock className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
+              <CalendarClock className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
               <dd className={isCancelled ? "line-through" : "font-medium"}>
                 {formatInZone(booking.startsAt, timezone)}
               </dd>
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="text-muted-foreground h-4 w-4 shrink-0" />
+              <Clock className="h-4 w-4 shrink-0 text-muted-foreground" />
               <dd>{formatDuration(booking.eventType.durationMinutes)}</dd>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin className="text-muted-foreground h-4 w-4 shrink-0" />
+              <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
               <dd>
                 {LOCATION_LABELS[booking.locationType]}
                 {booking.locationDetails ? ` · ${booking.locationDetails}` : ""}
               </dd>
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="text-muted-foreground h-4 w-4 shrink-0" />
-              <dd className="text-muted-foreground text-xs">{timezone}</dd>
+              <Globe className="h-4 w-4 shrink-0 text-muted-foreground" />
+              <dd className="text-xs text-muted-foreground">{timezone}</dd>
             </div>
           </dl>
 
@@ -134,16 +135,16 @@ export function BookingDetail({ token }: { token: string }) {
           )}
 
           {booking.rescheduledAt && (
-            <p className="text-muted-foreground text-xs">
+            <p className="text-xs text-muted-foreground">
               Rescheduled on {formatInZone(booking.rescheduledAt, timezone)}.
             </p>
           )}
 
           {isCancelled && (
-            <div className="border-border rounded-xl border p-3">
+            <div className="rounded-xl border border-border p-3">
               <p className="text-sm font-medium">This booking was cancelled</p>
               {booking.cancelReason && (
-                <p className="text-muted-foreground mt-1 text-sm">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {booking.cancelReason}
                 </p>
               )}
@@ -162,7 +163,7 @@ export function BookingDetail({ token }: { token: string }) {
       {!isCancelled && (
         <Card>
           <CardContent className="space-y-3">
-            <p className="font-heading text-lg">Add to your calendar</p>
+            <CardTitle>Add to your calendar</CardTitle>
             <div className="flex flex-wrap gap-2">
               <Button asChild variant="outline" size="sm">
                 <a

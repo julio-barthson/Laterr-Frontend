@@ -8,3 +8,9 @@
 - Environments: .env
 ✓ Ready in 2.1s
 
+○ Compiling / ...
+ GET / 200 in 8.3s (next.js: 6.5s, proxy.ts: 357ms, application-code: 1520ms)
+ GET / 200 in 316ms (next.js: 11ms, proxy.ts: 17ms, application-code: 288ms)
+ GET /contact 200 in 1296ms (next.js: 1046ms, proxy.ts: 7ms, application-code: 243ms)
+ GET / 200 in 122ms (next.js: 30ms, proxy.ts: 48ms, application-code: 44ms)
+ GET /auth?next=%2Fapp 200 in 1484ms (next.js: 1391ms, proxy.ts: 61ms, application-code: 31ms)
