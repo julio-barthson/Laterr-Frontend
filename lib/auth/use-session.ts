@@ -91,6 +91,77 @@ export function useRegister() {
   })
 }
 
+/**
+ * Request a reset link.
+ *
+ * Always resolves for a well-formed address, because the API always answers
+ * 204 — it will not say whether an account exists. The UI must therefore show
+ * the same confirmation either way; anything that distinguished them here would
+ * hand back the enumeration the endpoint is built to withhold.
+ */
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) =>
+      api.post<void>("/auth/forgot-password", { email }),
+  })
+}
+
+interface ResetPasswordInput {
+  token: string
+  password: string
+}
+
+/** Completes a reset and lands the user signed in, so it seeds the session. */
+export function useResetPassword() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (input: ResetPasswordInput) =>
+      api.post<SessionResponse>("/auth/reset-password", input),
+    onSuccess: ({ user }) => {
+      queryClient.setQueryData(SESSION_QUERY_KEY, user)
+    },
+  })
+}
+
+interface ChangePasswordInput {
+  currentPassword: string
+  newPassword: string
+}
+
+/**
+ * Change the password of the signed-in user.
+ *
+ * The API re-issues this device's cookies as part of the response, so the
+ * caller stays signed in while every other device is signed out immediately.
+ */
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (input: ChangePasswordInput) =>
+      api.post<{ ok: boolean }>("/auth/change-password", input),
+  })
+}
+
+export function useVerifyEmail() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (token: string) =>
+      api.post<{ email: string }>("/auth/verify-email", { token }),
+    onSuccess: () => {
+      // The banner keys off `emailVerified` from /auth/me, so the session has
+      // to be refetched for it to disappear.
+      void queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY })
+    },
+  })
+}
+
+export function useResendVerification() {
+  return useMutation({
+    mutationFn: () => api.post<void>("/auth/resend-verification"),
+  })
+}
+
 export function useLogout() {
   const queryClient = useQueryClient()
   const router = useRouter()

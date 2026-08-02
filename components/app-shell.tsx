@@ -51,6 +51,7 @@ const NAV_MAIN = [
   { title: "Home", url: "/app", icon: LayoutDashboard },
   { title: "Events", url: "/event-types", icon: CalendarHeart },
   { title: "Meetings", url: "/meetings", icon: CalendarClock },
+  { title: "Schedules", url: "/schedules", icon: CalendarHeart },
   { title: "Availability", url: "/availability", icon: Clock },
   { title: "Laterr AI", url: "/chat", icon: Sparkles },
   { title: "Profile", url: "/settings", icon: UserCircle },
@@ -65,15 +66,20 @@ const NAV_MANAGE = [
   { title: "Inbox", url: "/inbox", icon: Mail, businessOnly: false },
   { title: "Teams", url: "/workspaces", icon: Users, businessOnly: true },
   { title: "Roles", url: "/roles", icon: ShieldCheck, businessOnly: true },
-  { title: "Settings", url: "/settings", icon: SettingsIcon, businessOnly: false },
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: SettingsIcon,
+    businessOnly: false,
+  },
 ] as const
 
 const MOBILE_NAV = [
-  { label: "Home", url: "/app", icon: null },
+  { label: "Home", url: "/app", icon: LayoutDashboard },
   { label: "AI", url: "/chat", icon: MessageCircle },
-  { label: "Meet", url: "/meetings", icon: null },
-  { label: "Inbox", url: "/inbox", icon: null },
-  { label: "Me", url: "/settings", icon: null },
+  { label: "Meet", url: "/meetings", icon: CalendarClock },
+  { label: "Inbox", url: "/inbox", icon: Mail },
+  { label: "Me", url: "/settings", icon: UserCircle },
 ] as const
 
 const BANNER_TONE: Record<string, string> = {
@@ -155,7 +161,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                         {item.businessOnly && needsUpgrade && (
-                          <span className="border-primary/30 bg-primary/10 text-primary ml-auto rounded-full border px-1.5 py-0.5 text-[10px] leading-none">
+                          <span className="ml-auto rounded-full border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[10px] leading-none text-primary">
                             Business
                           </span>
                         )}
@@ -169,7 +175,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <SidebarMenuButton asChild isActive={isActive("/admin")}>
                       <Link
                         href="/admin"
-                        className="text-primary flex items-center gap-2"
+                        className="flex items-center gap-2 text-primary"
                       >
                         <ShieldAlert className="h-4 w-4" />
                         <span>Admin</span>
@@ -201,14 +207,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               surfaces outside a team member list. */}
           <Link
             href="/settings"
-            className="hover:bg-accent flex items-center gap-2 rounded-lg px-2 py-2"
+            className="flex items-center gap-2 rounded-lg px-2 py-2 hover:bg-accent"
           >
             <Avatar className="h-8 w-8">
               {profile?.avatarUrl && (
                 <AvatarImage src={profile.avatarUrl} alt="" />
               )}
               <AvatarFallback className="text-xs">
-                {(profile?.displayName ?? profile?.username ?? user?.email ?? "?")
+                {(
+                  profile?.displayName ??
+                  profile?.username ??
+                  user?.email ??
+                  "?"
+                )
                   .charAt(0)
                   .toUpperCase()}
               </AvatarFallback>
@@ -217,7 +228,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <p className="truncate text-sm font-medium">
                 {profile?.displayName ?? profile?.username ?? "Your profile"}
               </p>
-              <p className="text-muted-foreground truncate text-xs">
+              <p className="truncate text-xs text-muted-foreground">
                 {user?.email}
               </p>
             </div>
@@ -240,7 +251,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <SidebarInset>
         {platform?.maintenanceMode && (
-          <div className="border-destructive/30 bg-destructive/10 border-b">
+          <div className="border-b border-destructive/30 bg-destructive/10">
             <div className="mx-auto max-w-6xl px-4 py-2 text-sm sm:px-6">
               <strong className="mr-2">Maintenance</strong>
               <span className="text-muted-foreground">
@@ -270,17 +281,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
 
         {isAdmin && (
-          <div className="border-primary/30 bg-primary/10 border-b">
+          <div className="border-b border-primary/30 bg-primary/10">
             <div className="flex items-center justify-between gap-4 px-4 py-2 text-sm sm:px-6">
-              <div className="text-foreground flex min-w-0 items-center gap-2">
-                <ShieldAlert className="text-primary h-4 w-4 shrink-0" />
+              <div className="flex min-w-0 items-center gap-2 text-foreground">
+                <ShieldAlert className="h-4 w-4 shrink-0 text-primary" />
                 <span className="truncate">
                   You&apos;re signed in as an <strong>Admin</strong>.
                 </span>
               </div>
               <Link
                 href="/admin"
-                className="bg-primary text-primary-foreground inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium hover:opacity-90"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:opacity-90"
               >
                 Open Admin
               </Link>
@@ -288,7 +299,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         )}
 
-        <header className="border-border/40 bg-background/70 sticky top-0 z-20 flex h-14 items-center gap-2 border-b px-3 backdrop-blur-md sm:px-4">
+        <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border/40 bg-background/70 px-3 backdrop-blur-md sm:px-4">
           <SidebarTrigger />
           <Link
             href="/app"
@@ -300,7 +311,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="ml-auto flex items-center gap-2">
             <Link
               href="/chat"
-              className="bg-primary text-primary-foreground inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm sm:px-4"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary px-3 text-sm text-primary-foreground sm:px-4"
             >
               <Sparkles className="h-4 w-4" />
               <span className="hidden sm:inline">Ask Laterr AI</span>
@@ -309,21 +320,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl px-4 py-6 pb-20 sm:px-6 sm:py-10 md:pb-10">
+        <main className="mx-auto w-full max-w-6xl px-4 py-6 pb-20 sm:px-4 md:pb-10">
           {children}
         </main>
 
         {/* Thumb-reachable nav on small screens. */}
         <nav
           aria-label="Quick navigation"
-          className="border-border bg-card/95 fixed bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-full border p-1 shadow-lg backdrop-blur md:hidden"
+          className="fixed bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-full border border-border bg-card/95 p-1 shadow-lg backdrop-blur md:hidden"
         >
           {MOBILE_NAV.map((item) => (
             <Link
               key={item.url}
               href={item.url}
               className={cn(
-                "rounded-full px-3 py-1.5 text-xs",
+                "flex flex-col items-center justify-center rounded-full px-3 py-1.5 text-xs",
                 isActive(item.url) && "bg-primary text-primary-foreground"
               )}
             >

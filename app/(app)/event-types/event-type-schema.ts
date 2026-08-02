@@ -30,7 +30,7 @@ export const questionSchema = z.object({
   isRequired: z.boolean(),
 })
 
-export const eventTypeSchema = z.object({
+const eventTypeFields = z.object({
   name: z.string().trim().min(1, "Name is required").max(120),
   slug: z
     .string()
@@ -56,6 +56,29 @@ export const eventTypeSchema = z.object({
   isHidden: z.boolean(),
   questions: z.array(questionSchema).max(50),
 })
+
+const MINUTES_PER_DAY = 24 * 60
+
+/**
+ * Every field above can be in range while the event is still unbookable,
+ * because the settings interact. Minimum notice pushes the earliest bookable
+ * instant forward from now; the rolling window caps how far ahead anyone can
+ * look from the same origin. Notice at or beyond the window rules out every
+ * time, `computeSlots` returns nothing, and the booking page shows a calendar
+ * with every date greyed out — which reads as broken rather than as "fully
+ * booked".
+ *
+ * The other half of this rule — duration against the host's longest available
+ * block — needs the availability schedule and so is enforced server-side only.
+ */
+export const eventTypeSchema = eventTypeFields.refine(
+  (values) => values.minNoticeMin < values.rollingDays * MINUTES_PER_DAY,
+  {
+    path: ["minNoticeMin"],
+    message:
+      "Longer than your booking window, so no times would be offered. Lower this or raise 'Bookable up to'.",
+  }
+)
 
 export type EventTypeFormValues = z.infer<typeof eventTypeSchema>
 

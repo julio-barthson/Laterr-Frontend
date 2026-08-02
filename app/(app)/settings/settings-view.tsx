@@ -27,6 +27,9 @@ import {
 } from "@/lib/hooks/use-profile"
 import { browserTimezone, timezoneOptions } from "@/lib/time"
 import { PageHeader } from "@/components/PageHeader"
+import { CalendarCard } from "./calendar-card"
+import { SecurityCard } from "./security-card"
+import { VerifyEmailCard } from "./verify-email-card"
 
 const PERSONAS: Array<{ value: PersonaType; label: string; hint: string }> = [
   { value: "individual", label: "Individual", hint: "Just me." },
@@ -50,6 +53,13 @@ export function SettingsView() {
         back
       />
 
+      {/* Outside the profile gate: it reads the session, not the profile, and
+          an unconfirmed address is worth surfacing before the rest loads. */}
+      <VerifyEmailCard />
+
+      {/* Independent of the profile: it reads connections, not the profile. */}
+      <CalendarCard />
+
       {isLoading || !profile ? (
         <>
           <Skeleton className="h-40 w-full rounded-xl" />
@@ -70,6 +80,7 @@ function ProfileForms({ profile }: { profile: Profile }) {
       <AvatarPicker profile={profile} />
       <DetailsCard profile={profile} />
       <BookingLinkCard profile={profile} />
+      <SecurityCard />
     </>
   )
 }

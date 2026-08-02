@@ -16,7 +16,7 @@ export function AgendaColumn({
 }) {
   return (
     <div>
-      <h3 className="font-heading text-lg">{title}</h3>
+      <h3 className="font-semibold text-base">{title}</h3>
       {items.length === 0 ? (
         <p className="text-muted-foreground mt-2 text-sm">{emptyLabel}</p>
       ) : (

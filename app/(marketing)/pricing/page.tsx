@@ -3,9 +3,9 @@ import Link from "next/link"
 import { Check } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { PLANS } from "@/lib/marketing-content"
+import { CheckoutButton } from "./checkout-button"
 import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
@@ -61,13 +61,7 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <Button
-                asChild
-                className="mt-6 w-full rounded-full"
-                variant={plan.highlight ? "default" : "outline"}
-              >
-                <Link href="/auth">Get started</Link>
-              </Button>
+              <CheckoutButton tier={plan.tier} highlight={plan.highlight} />
             </CardContent>
           </Card>
         ))}

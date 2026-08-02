@@ -67,6 +67,15 @@ function dayKey(year: number, month: number, day: number): string {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
 }
 
+/** "August 2026" for a visible month. UTC, since YearMonth is a bare calendar. */
+export function monthLabel(visible: YearMonth): string {
+  return new Intl.DateTimeFormat(undefined, {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(visible.year, visible.month, 1)))
+}
+
 export function SlotCalendar({
   slots,
   timezone,
@@ -92,11 +101,7 @@ export function SlotCalendar({
   const firstWeekday = new Date(Date.UTC(year, month, 1)).getUTCDay()
   const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
 
-  const monthLabel = new Intl.DateTimeFormat(undefined, {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(Date.UTC(year, month, 1)))
+  const label = monthLabel(visible)
 
   function shift(by: number) {
     const next = new Date(Date.UTC(year, month + by, 1))
@@ -119,7 +124,7 @@ export function SlotCalendar({
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <p className="font-heading text-lg" aria-live="polite">
-          {monthLabel}
+          {label}
         </p>
         <Button
           type="button"
@@ -144,7 +149,7 @@ export function SlotCalendar({
       <div
         className="grid grid-cols-7 gap-1"
         role="group"
-        aria-label={`Available days in ${monthLabel}`}
+        aria-label={`Available days in ${label}`}
       >
         {Array.from({ length: firstWeekday }, (_, index) => (
           <span key={`blank-${index}`} />

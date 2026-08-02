@@ -171,7 +171,18 @@ export function AuthForm({ next }: { next?: string }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex items-baseline justify-between gap-2">
+                <Label htmlFor="password">Password</Label>
+                {mode === "signin" && (
+                  <Link
+                    href="/auth/forgot"
+                    className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4"
+                    tabIndex={-1}
+                  >
+                    Forgot password?
+                  </Link>
+                )}
+              </div>
               <Input
                 id="password"
                 name="password"

@@ -141,12 +141,15 @@ function EventTypeRow({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
+            <CardTitle>
+
             <Link
               href={`/event-types/${eventType.id}`}
-              className="truncate font-heading text-lg hover:underline"
+              className="truncate hover:underline"
             >
               {eventType.name}
             </Link>
+            </CardTitle>
             {!eventType.isActive && <Badge variant="secondary">Off</Badge>}
             {eventType.isHidden && <Badge variant="outline">Hidden</Badge>}
           </div>

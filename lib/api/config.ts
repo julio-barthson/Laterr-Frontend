@@ -22,6 +22,13 @@ export const AUTH_ENDPOINTS = [
   "/auth/register",
   "/auth/refresh",
   "/auth/logout",
+  // The recovery routes belong here for the same reason: they are reached by a
+  // signed-out user, so a 401 means the token in the URL is bad, not that the
+  // session needs refreshing. Retrying behind a refresh would just burn the
+  // single-use token against a request that was always going to fail.
+  "/auth/forgot-password",
+  "/auth/reset-password",
+  "/auth/verify-email",
 ] as const
 
 export function isAuthEndpoint(path: string) {

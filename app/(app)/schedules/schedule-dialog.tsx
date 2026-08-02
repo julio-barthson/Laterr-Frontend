@@ -1,11 +1,13 @@
 "use client"
 
+import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useWatch } from "react-hook-form"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { z } from "zod"
 
+import { UpgradeDialog } from "@/components/billing/upgrade-dialog"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -94,6 +96,7 @@ export function ScheduleDialog({
   })
 
   const errors = form.formState.errors
+  const [paywallReason, setPaywallReason] = React.useState<string | null>(null)
   // useWatch rather than form.watch(): watch() is not memoizable, which makes
   // the React Compiler skip optimising this component.
   const category = useWatch({ control: form.control, name: "category" })
@@ -121,9 +124,9 @@ export function ScheduleDialog({
         // The quota rejection carries a machine-readable code so the paywall
         // can be distinguished from an ordinary permission failure.
         if (error.code === "FREEMIUM_LIMIT") {
-          toast.error(error.message, {
-            description: "Upgrade to add more than one schedule.",
-          })
+          // The paywall, not a toast: the rejection and the way past it belong
+          // in the same place.
+          setPaywallReason(error.message)
           return
         }
 
@@ -138,6 +141,21 @@ export function ScheduleDialog({
 
       toast.error("Something went wrong")
     }
+  }
+
+  if (paywallReason !== null) {
+    // Replaces the form rather than stacking a second dialog on it — nested
+    // modals fight over focus, and the form is unusable until they upgrade.
+    return (
+      <UpgradeDialog
+        open
+        reason={paywallReason}
+        onOpenChange={() => {
+          setPaywallReason(null)
+          onOpenChange(false)
+        }}
+      />
+    )
   }
 
   return (

@@ -7,6 +7,11 @@
 
 export interface Plan {
   name: string
+  /**
+   * The tier this card sells, matching the API's PurchasableTier. Absent for
+   * Enterprise, which is a sales conversation rather than a checkout.
+   */
+  tier?: "individual" | "family" | "business"
   price: string
   period: string
   yearly: string
@@ -17,6 +22,7 @@ export interface Plan {
 export const PLANS: Plan[] = [
   {
     name: "Individual",
+    tier: "individual",
     price: "$8.99",
     period: "/month",
     yearly: "or $79.99 / year",
@@ -31,6 +37,7 @@ export const PLANS: Plan[] = [
   },
   {
     name: "Family",
+    tier: "family",
     price: "$14.99",
     period: "/month",
     yearly: "or $149 / year",
@@ -45,6 +52,7 @@ export const PLANS: Plan[] = [
   },
   {
     name: "Business",
+    tier: "business",
     price: "$29.99",
     period: "/month",
     yearly: "or $299 / year",

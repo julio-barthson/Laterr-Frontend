@@ -6,7 +6,12 @@ import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,10 +32,10 @@ import {
   downloadBookingsCsv,
   useBookings,
   useSetBookingStatus,
-  useSetMeetingUrl,
 } from "@/lib/hooks/use-bookings"
 import { useEventTypes } from "@/lib/hooks/use-event-types"
 import { PageHeader } from "@/components/PageHeader"
+import { MeetingLinkDialog } from "./meeting-link-dialog"
 
 const TABS: Array<{ value: MeetingsTab; label: string }> = [
   { value: "upcoming", label: "Upcoming" },
@@ -154,26 +159,10 @@ export function MeetingsView() {
 
 function BookingRow({ booking }: { booking: Booking }) {
   const setStatus = useSetBookingStatus()
-  const setMeetingUrl = useSetMeetingUrl()
+  const [editingLink, setEditingLink] = React.useState(false)
 
   const start = new Date(booking.startsAt)
   const end = new Date(booking.endsAt)
-
-  function promptForMeetingUrl() {
-    // A prompt is deliberately crude but honest: an inline editor here would be
-    // a bigger surface than the action deserves.
-    const next = window.prompt("Meeting link", booking.meetingUrl ?? "https://")
-
-    if (next === null) return
-
-    setMeetingUrl.mutate(
-      { id: booking.id, meetingUrl: next.trim() || null },
-      {
-        onSuccess: () => toast.success("Meeting link updated"),
-        onError: () => toast.error("Could not save that link"),
-      }
-    )
-  }
 
   return (
     <Card>
@@ -186,15 +175,13 @@ function BookingRow({ booking }: { booking: Booking }) {
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate font-heading text-lg">
-              {booking.inviteeName}
-            </p>
+            <CardTitle className="truncate">{booking.inviteeName}</CardTitle>
             <Badge variant={STATUS_VARIANT[booking.status] ?? "secondary"}>
               {booking.status.replace("_", " ")}
             </Badge>
           </div>
 
-          <p className="mt-1 text-sm text-muted-foreground">
+          <CardDescription className="mt-1 text-muted-foreground">
             {booking.eventType.name} ·{" "}
             <time dateTime={booking.startsAt}>{start.toLocaleString()}</time>
             {" – "}
@@ -202,10 +189,16 @@ function BookingRow({ booking }: { booking: Booking }) {
               hour: "numeric",
               minute: "2-digit",
             })}
-          </p>
+          </CardDescription>
 
           <p className="mt-0.5 text-xs text-muted-foreground">
-            {booking.inviteeEmail} · {booking.inviteeTimezone} ·{" "}
+            <a
+              href={`mailto:${booking.inviteeEmail}`}
+              className="hover:text-primary hover:underline"
+            >
+              {booking.inviteeEmail}
+            </a>{" "}
+            · {booking.inviteeTimezone} ·{" "}
             {LOCATION_LABELS[booking.locationType]}
           </p>
 
@@ -240,7 +233,7 @@ function BookingRow({ booking }: { booking: Booking }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={promptForMeetingUrl}>
+            <DropdownMenuItem onSelect={() => setEditingLink(true)}>
               {booking.meetingUrl ? "Change meeting link" : "Add meeting link"}
             </DropdownMenuItem>
 
@@ -295,6 +288,16 @@ function BookingRow({ booking }: { booking: Booking }) {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Mounted only while open, matching ScheduleDialog: an always-mounted
+            dialog would hold stale form defaults after the booking refetches. */}
+        {editingLink && (
+          <MeetingLinkDialog
+            open
+            booking={booking}
+            onOpenChange={() => setEditingLink(false)}
+          />
+        )}
       </CardContent>
     </Card>
   )

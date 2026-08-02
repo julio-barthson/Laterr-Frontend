@@ -11,12 +11,13 @@ import {
   SlotCalendar,
   currentYearMonth,
   groupSlotsByDay,
+  monthLabel,
   monthWindow,
   type YearMonth,
 } from "./slot-calendar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardTitle, CardDescription} from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
@@ -97,6 +98,9 @@ export function BookingFlow({
 
   const byDay = groupSlotsByDay(slots.data?.slots ?? [], timezone)
   const daySlots = selectedDay ? (byDay.get(selectedDay) ?? []) : []
+  // Nothing at all this month: every date in the grid is disabled, so pointing
+  // at "highlighted days" would describe something the visitor cannot see.
+  const monthIsEmpty = !slots.isLoading && byDay.size === 0
 
   return (
     <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
@@ -229,7 +233,9 @@ export function BookingFlow({
                 <p className="font-heading mb-3 text-sm">
                   {selectedDay
                     ? formatDayHeading(selectedDay)
-                    : "Select a day"}
+                    : monthIsEmpty
+                      ? "Nothing this month"
+                      : "Select a day"}
                 </p>
 
                 {slots.isLoading && (
@@ -240,7 +246,14 @@ export function BookingFlow({
                   </div>
                 )}
 
-                {!slots.isLoading && !selectedDay && (
+                {monthIsEmpty && (
+                  <p className="text-muted-foreground text-sm">
+                    No times are available in {monthLabel(visible)}. Try the
+                    next month, or check back later.
+                  </p>
+                )}
+
+                {!slots.isLoading && !monthIsEmpty && !selectedDay && (
                   <p className="text-muted-foreground text-sm">
                     Highlighted days have times available.
                   </p>
@@ -351,7 +364,7 @@ function DetailsForm({
 
   return (
     <form onSubmit={form.handleSubmit(submit)} className="space-y-4">
-      <h2 className="font-heading text-xl">Your details</h2>
+      <CardTitle>Your details</CardTitle>
 
       <FieldGroup>
         <Field data-invalid={Boolean(errors.inviteeName)}>
@@ -507,11 +520,11 @@ function NotBookable() {
   return (
     <Card className="mx-auto max-w-md">
       <CardContent className="py-10 text-center">
-        <h1 className="font-heading text-xl">This link isn&apos;t available</h1>
-        <p className="text-muted-foreground mt-2 text-sm">
+        <CardTitle>This link isn&apos;t available</CardTitle>
+        <CardDescription className="text-muted-foreground mt-2">
           The event may have been turned off or removed. Try asking the host for
           a new link.
-        </p>
+        </CardDescription>
       </CardContent>
     </Card>
   )

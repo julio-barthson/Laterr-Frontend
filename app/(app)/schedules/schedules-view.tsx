@@ -49,6 +49,7 @@ import {
   useSchedules,
   useSetScheduleStatus,
 } from "@/lib/hooks/use-schedules"
+import { PageHeader } from "@/components/PageHeader"
 
 const STATUS_TABS: Array<{ value: ScheduleStatus | "all"; label: string }> = [
   { value: "upcoming", label: "Upcoming" },
@@ -79,28 +80,21 @@ export function SchedulesView() {
 
   return (
     <>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-heading text-3xl sm:text-4xl">Schedules</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Meetings, payments, flights, match days and tasks in one place.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {/* The natural-language capture is the primary path — it is the
-              product's whole pitch. The dialog stays as the manual fallback for
-              anyone who would rather just fill in fields.
-
-              Rendered as a plain disabled Button at the quota limit rather than
-              `asChild` with `disabled`: Slot merges props onto the Link, and
-              `disabled` on an anchor does nothing at all — the control would
-              look enabled and still navigate. */}
+      <div className="flex w-full flex-col items-start justify-between gap-2 lg:flex-row lg:items-center">
+        <PageHeader
+          back
+          title={"Schedules"}
+          description={
+            "Meetings, payments, flights, match days and tasks in one place."
+          }
+        />
+        <div className="flex w-full gap-2 lg:w-auto">
           {atLimit ? (
-            <Button className="rounded-full" disabled>
+            <Button className="flex-1 rounded-full lg:flex-none" disabled>
               <Sparkles className="mr-1.5 h-4 w-4" /> New schedule
             </Button>
           ) : (
-            <Button asChild className="rounded-full">
+            <Button asChild className="flex-1 rounded-full lg:flex-none">
               <Link href="/schedules/new">
                 <Sparkles className="mr-1.5 h-4 w-4" /> New schedule
               </Link>
@@ -108,21 +102,19 @@ export function SchedulesView() {
           )}
           <Button
             variant="outline"
-            className="rounded-full"
+            className="flex-1 rounded-full lg:flex-none"
             onClick={() => setCreating(true)}
-            // Blocking here is a courtesy — the API enforces the quota itself
-            // and returns FREEMIUM_LIMIT regardless.
             disabled={atLimit}
           >
             <Plus className="mr-1.5 h-4 w-4" /> Add manually
           </Button>
         </div>
-      </header>
+      </div>
 
       {atLimit && quota && (
         <Card className="mt-6 border-primary/30 bg-primary/5">
           <CardContent className="flex flex-wrap items-center justify-between gap-3">
-            <div>
+            <div className="min-w-0 flex-1">
               <CardTitle>
                 You&apos;ve used your {quota.limit} trial schedule
                 {quota.limit === 1 ? "" : "s"}
@@ -132,19 +124,20 @@ export function SchedulesView() {
                 still count toward the trial.
               </CardDescription>
             </div>
-            <Button asChild className="rounded-full">
+            <Button asChild className="w-full rounded-full sm:w-auto">
               <Link href="/pricing">See plans</Link>
             </Button>
           </CardContent>
         </Card>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <Tabs
+          className="w-full sm:w-auto"
           value={status}
           onValueChange={(value) => setStatus(value as ScheduleStatus | "all")}
         >
-          <TabsList>
+          <TabsList className="w-full sm:w-fit">
             {STATUS_TABS.map((tab) => (
               <TabsTrigger key={tab.value} value={tab.value}>
                 {tab.label}
@@ -155,7 +148,7 @@ export function SchedulesView() {
 
         <NativeSelect
           aria-label="Filter by category"
-          className="w-40"
+          className="w-full sm:w-40"
           value={category}
           onChange={(event) =>
             setCategory(event.target.value as ScheduleCategory | "all")
@@ -173,7 +166,7 @@ export function SchedulesView() {
       <div className="mt-4 space-y-3">
         {isLoading &&
           Array.from({ length: 4 }, (_, index) => (
-            <Skeleton key={index} className="h-20 rounded-xl" />
+            <Skeleton key={index} className="h-32 rounded-xl sm:h-20" />
           ))}
 
         {!isLoading && (schedules ?? []).length === 0 && (
@@ -227,40 +220,51 @@ function ScheduleRow({
 
   return (
     <Card>
-      <CardContent className="flex flex-wrap items-center gap-4">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-          <Icon className="h-5 w-5" />
-        </span>
+      <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex min-w-0 flex-1 items-start gap-3 sm:items-center sm:gap-4">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+            <Icon className="h-5 w-5" />
+          </span>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Opens the detail page rather than the edit dialog: the title is
-                the thing you click to *see* a schedule, and detail is where the
-                post-event check-in lives. Editing has its own control below. */}
-            <Link
-              href={`/schedules/${schedule.id}`}
-              className="truncate text-left font-heading text-lg hover:underline"
-            >
-              {schedule.title}
-            </Link>
-            <Badge variant="secondary" className="capitalize">
-              {schedule.category}
-            </Badge>
-            {schedule.status !== "upcoming" && (
-              <Badge variant="outline" className="capitalize">
-                {schedule.status}
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <CardTitle className="min-w-0">
+                <Link
+                  href={`/schedules/${schedule.id}`}
+                  className="block truncate text-left hover:underline"
+                >
+                  {schedule.title}
+                </Link>
+              </CardTitle>
+              <Badge variant="secondary" className="capitalize">
+                {schedule.category}
               </Badge>
-            )}
+              {schedule.status !== "upcoming" && (
+                <Badge variant="outline" className="capitalize">
+                  {schedule.status}
+                </Badge>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+              <time dateTime={schedule.startsAt}>
+                {start.toLocaleString(undefined, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
+              </time>
+              {schedule.location ? ` · ${schedule.location}` : ""}
+              {schedule.recipient ? ` · ${schedule.recipient}` : ""}
+            </p>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            <time dateTime={schedule.startsAt}>{start.toLocaleString()}</time>
-            {schedule.location ? ` · ${schedule.location}` : ""}
-            {schedule.recipient ? ` · ${schedule.recipient}` : ""}
-          </p>
         </div>
 
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" onClick={onEdit}>
+        <div className="flex flex-wrap items-center gap-1 sm:shrink-0 sm:justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 px-3 sm:h-6 sm:px-2"
+            onClick={onEdit}
+          >
             <Pencil className="mr-1 h-4 w-4" /> Edit
           </Button>
 
@@ -269,6 +273,7 @@ function ScheduleRow({
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-9 px-3 sm:h-6 sm:px-2"
                 disabled={setStatus.isPending}
                 onClick={() =>
                   setStatus.mutate(
@@ -282,6 +287,7 @@ function ScheduleRow({
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-9 px-3 sm:h-6 sm:px-2"
                 disabled={setStatus.isPending}
                 onClick={() =>
                   setStatus.mutate(
@@ -300,6 +306,7 @@ function ScheduleRow({
               <Button
                 variant="ghost"
                 size="icon"
+                className="ml-auto size-9 sm:ml-0 sm:size-7"
                 aria-label={`Delete ${schedule.title}`}
               >
                 {remove.isPending ? (

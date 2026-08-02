@@ -47,6 +47,7 @@ import {
 } from "@/lib/hooks/use-chat"
 import { Markdown } from "@/components/markdown"
 import { useVoiceRecorder } from "@/lib/hooks/use-voice-recorder"
+import { PageHeader } from "@/components/PageHeader"
 
 /** Openers, so a blank page is not the first thing a user meets. */
 const SUGGESTIONS = [
@@ -106,22 +107,31 @@ export function ChatView() {
 
   return (
     <div className="flex h-[calc(100vh-8rem)] flex-col gap-4">
-      <header className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="font-heading flex items-center gap-2 text-3xl">
-            <Sparkles className="text-primary h-6 w-6" />
-            Laterr AI
-          </h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Ask for anything on your account — it can act, not just advise.
-          </p>
-        </div>
+      <div className="flex w-full flex-col items-start justify-between gap-2 lg:flex-row lg:items-center">
+        <PageHeader
+          back
+          title={
+            <span className="flex items-center gap-2">
+              <Sparkles className="h-6 w-6 text-primary" />
+              Laterr AI
+            </span>
+          }
+          description={
+            "Ask for anything on your account — it can act, not just advise."
+          }
+        />
         {messages.length > 0 && (
           <Button variant="ghost" size="sm" onClick={reset}>
             <Trash2 className="mr-1.5 h-4 w-4" />
             Clear
           </Button>
         )}
+      </div>
+      <header className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="flex items-center gap-2 font-heading text-3xl"></h1>
+          <p className="mt-1 text-sm text-muted-foreground"></p>
+        </div>
       </header>
 
       {capabilities.isLoading ? (
@@ -209,7 +219,7 @@ function Opener({ onPick }: { onPick: (text: string) => void }) {
               key={suggestion}
               type="button"
               onClick={() => onPick(suggestion)}
-              className="border-border hover:bg-accent rounded-full border px-3 py-1.5 text-xs"
+              className="rounded-full border border-border px-3 py-1.5 text-xs hover:bg-accent"
             >
               {suggestion}
             </button>
@@ -232,14 +242,14 @@ function Turn({
   return (
     <Message align={isUser ? "end" : "start"}>
       {!isUser && (
-        <MessageAvatar className="bg-primary/15 text-primary h-8 w-8">
+        <MessageAvatar className="h-8 w-8 bg-primary/15 text-primary">
           <Sparkles className="h-4 w-4" />
         </MessageAvatar>
       )}
 
       <MessageContent>
         {message.tools.length > 0 && (
-          <p className="text-muted-foreground flex items-center gap-1.5 px-1 text-xs">
+          <p className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground">
             <Wrench className="h-3 w-3 shrink-0" />
             <span>
               {message.tools
@@ -262,16 +272,18 @@ function Turn({
                 {/* Only while this turn is still open and nothing has arrived
                     yet — a persistent spinner on an empty final message would
                     look like a hang. */}
-                {streaming && message.content.length === 0 && !message.error && (
-                  <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
-                )}
+                {streaming &&
+                  message.content.length === 0 &&
+                  !message.error && (
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  )}
               </>
             )}
           </BubbleContent>
         </Bubble>
 
         {message.error && (
-          <p className="text-destructive px-1 text-xs">{message.error}</p>
+          <p className="px-1 text-xs text-destructive">{message.error}</p>
         )}
       </MessageContent>
     </Message>
@@ -401,7 +413,7 @@ function Composer({
         </form>
 
         {recorder.isRecording && (
-          <p className="text-muted-foreground mt-2 text-xs">
+          <p className="mt-2 text-xs text-muted-foreground">
             Recording… tap the microphone again to stop.
           </p>
         )}
