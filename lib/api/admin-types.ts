@@ -122,7 +122,13 @@ export interface AdminStats {
   users: number
   schedules: number
   followups: number
+  /** Confirmed bookings. Distinct from bookingRequests — see below. */
   bookings: number
+  /**
+   * "Request a time" inbox submissions. Previously reported *as* `bookings`,
+   * which made the dashboard show zero on instances that had real bookings.
+   */
+  bookingRequests: number
   pendingRoleRequests: number
   workspaces: number
   newUsers7d: number
@@ -212,6 +218,14 @@ export interface VisibleAnnouncement {
   createdAt: string
 }
 
+/** Who an audit entry refers to. Null when the account has since been deleted. */
+export interface AuditParty {
+  id: string
+  email: string
+  displayName: string | null
+  username: string | null
+}
+
 export interface AuditEntry {
   id: string
   actorId: string
@@ -219,6 +233,9 @@ export interface AuditEntry {
   targetUserId: string | null
   metadata: Record<string, unknown> | null
   createdAt: string
+  /** Resolved identities. The bare ids above are unreadable on their own. */
+  actor: AuditParty | null
+  target: AuditParty | null
 }
 
 export interface OwnerWorkspace {

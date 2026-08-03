@@ -5,6 +5,7 @@ import {
   Ban,
   Check,
   Loader2,
+  ScrollText,
   ShieldAlert,
   Trash2,
   Users,
@@ -55,11 +56,13 @@ import { Textarea } from "@/components/ui/textarea"
 import type {
   AdminRoleRequest,
   AdminUser,
+  AuditEntry,
   RequestableRole,
 } from "@/lib/api/admin-types"
 import type { PlanTier, SubStatus } from "@/lib/api/domain-types"
 import { getErrorMessage } from "@/lib/api/errors"
 import {
+  useAdminAuditLog,
   useAdminDeleteSchedule,
   useAdminRoleRequests,
   useAdminSchedules,
@@ -128,7 +131,15 @@ export function AdminView() {
                   : undefined
               }
             />
-            <StatCard label="Bookings" value={stats.data?.bookings} />
+            <StatCard
+              label="Bookings"
+              value={stats.data?.bookings}
+              hint={
+                stats.data
+                  ? `${stats.data.bookingRequests} time requests`
+                  : undefined
+              }
+            />
             <StatCard
               label="Pending requests"
               value={stats.data?.pendingRoleRequests}
@@ -141,6 +152,7 @@ export function AdminView() {
               <TabsTrigger value="requests">Role requests</TabsTrigger>
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="schedules">Schedules</TabsTrigger>
+              <TabsTrigger value="audit">Audit log</TabsTrigger>
             </TabsList>
 
             <TabsContent value="requests" className="mt-4">
@@ -151,6 +163,9 @@ export function AdminView() {
             </TabsContent>
             <TabsContent value="schedules" className="mt-4">
               <SchedulesPanel />
+            </TabsContent>
+            <TabsContent value="audit" className="mt-4">
+              <AuditPanel />
             </TabsContent>
           </Tabs>
         </>
@@ -600,4 +615,98 @@ function SchedulesPanel() {
       </CardContent>
     </Card>
   )
+}
+
+/**
+ * The audit trail.
+ *
+ * Renders the actor, which the owner console's equivalent does not — it shows
+ * only the target, truncated to eight hex characters. "Who did this" is the
+ * first question anyone brings to an audit log, so it leads with that.
+ */
+function AuditPanel() {
+  const { data, isLoading } = useAdminAuditLog(true)
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <ScrollText className="h-4 w-4" />
+          Audit log
+        </CardTitle>
+        <CardDescription>
+          Append-only. Written by the server on every privileged action — there
+          is no route that edits or deletes an entry.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="space-y-0">
+        {isLoading && <Skeleton className="h-40 w-full rounded-lg" />}
+
+        {!isLoading && (data ?? []).length === 0 && (
+          <p className="text-muted-foreground py-2 text-sm">
+            Nothing recorded yet. Granting a role, changing a plan or deleting a
+            schedule will appear here.
+          </p>
+        )}
+
+        {(data ?? []).map((entry) => (
+          <AuditRow key={entry.id} entry={entry} />
+        ))}
+      </CardContent>
+    </Card>
+  )
+}
+
+function AuditRow({ entry }: { entry: AuditEntry }) {
+  const hasMetadata =
+    entry.metadata !== null && Object.keys(entry.metadata).length > 0
+
+  return (
+    <div className="border-border/60 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-b py-2.5 text-sm last:border-0">
+      <span className="font-medium">{describeParty(entry.actor)}</span>
+
+      <code className="bg-muted rounded px-1.5 py-0.5 text-xs">
+        {entry.action}
+      </code>
+
+      {entry.target && (
+        <>
+          <span className="text-muted-foreground text-xs">→</span>
+          <span className="truncate text-xs">
+            {describeParty(entry.target)}
+          </span>
+        </>
+      )}
+
+      {/* A recorded target whose account has since been deleted. Saying so is
+          more useful than dropping the arrow and implying there was none. */}
+      {!entry.target && entry.targetUserId && (
+        <span className="text-muted-foreground text-xs">
+          → deleted account
+        </span>
+      )}
+
+      <time
+        dateTime={entry.createdAt}
+        className="text-muted-foreground ml-auto text-xs"
+        title={new Date(entry.createdAt).toISOString()}
+      >
+        {new Date(entry.createdAt).toLocaleString()}
+      </time>
+
+      {hasMetadata && (
+        <p className="text-muted-foreground w-full font-mono text-xs">
+          {JSON.stringify(entry.metadata)}
+        </p>
+      )}
+    </div>
+  )
+}
+
+/** Prefer a name, fall back to the address, then to "deleted account". */
+function describeParty(party: AuditEntry["actor"]): string {
+  if (!party) return "deleted account"
+
+  return party.displayName ?? party.username ?? party.email
 }

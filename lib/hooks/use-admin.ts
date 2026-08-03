@@ -8,6 +8,7 @@ import type {
   AdminSchedule,
   AdminStats,
   AdminUser,
+  AuditEntry,
   RequestableRole,
 } from "@/lib/api/admin-types"
 import type { PlanTier, SubStatus } from "@/lib/api/domain-types"
@@ -47,6 +48,21 @@ export function useAdminRoleRequests(enabled: boolean) {
   return useQuery({
     queryKey: [...ADMIN_KEY, "role-requests"],
     queryFn: () => api.get<AdminRoleRequest[]>("/admin/role-requests"),
+    enabled,
+  })
+}
+
+/**
+ * The audit trail for admins.
+ *
+ * Deliberately not cached long: it is read to answer "what just happened", and
+ * a stale list is worse than a refetch.
+ */
+export function useAdminAuditLog(enabled: boolean) {
+  return useQuery({
+    queryKey: [...ADMIN_KEY, "audit-log"],
+    queryFn: () => api.get<AuditEntry[]>("/admin/audit-log"),
+    staleTime: 0,
     enabled,
   })
 }
