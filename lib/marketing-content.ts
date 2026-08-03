@@ -88,7 +88,7 @@ export interface FaqEntry {
 export const FAQ: FaqEntry[] = [
   {
     q: "What is Laterr?",
-    a: "An AI-powered scheduling ecosystem. It handles meetings, payments, flights, match days and tasks — then follows up afterwards like a friend who genuinely cares how it went.",
+    a: "An AI-powered scheduling ecosystem. It handles meetings, payments, flights, match days and tasks, then follows up afterwards like a friend who genuinely cares how it went.",
   },
   {
     q: "Do I need to install anything?",
@@ -128,7 +128,7 @@ export const FAQ: FaqEntry[] = [
   },
   {
     q: "What are AI follow-ups?",
-    a: "After a meeting, a match or a flight, Laterr checks in with a short warm message and three suggested replies — so the loop closes without you thinking about it.",
+    a: "After a meeting, a match or a flight, Laterr checks in with a short warm message and three suggested replies, so the loop closes without you thinking about it.",
   },
   {
     q: "How much does Laterr cost?",
@@ -157,15 +157,15 @@ export const CATEGORIES = [
 
 export const FEATURES = [
   {
-    title: "Voice or text — one line, one schedule",
+    title: "Voice or text, one line, one schedule",
     body: '"Remind me to pay Sarah $150 for rent next Tuesday at 4pm" becomes a structured event, priced and pinned to your day.',
   },
   {
     title: "AI follow-ups that feel like a friend",
-    body: "After a meeting, a match, or a flight — a warm check-in and three smart replies waiting for you.",
+    body: "After a meeting, a match, or a flight, a warm check-in and three smart replies waiting for you.",
   },
   {
     title: "Directions in one tap",
-    body: "Venue names resolve into real addresses and route the way you like — Google Maps on web and Android, Apple Maps on iOS.",
+    body: "Venue names resolve into real addresses and route the way you like, Google Maps on web and Android, Apple Maps on iOS.",
   },
 ] as const

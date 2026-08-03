@@ -25,7 +25,7 @@ export default function PricingPage() {
         </h1>
         <p className="text-muted-foreground mt-4">
           Every account starts with one free schedule across any category. Move
-          up when you need more — annual billing is cheaper on every tier.
+          up when you need more, annual billing is cheaper on every tier.
         </p>
       </header>
 

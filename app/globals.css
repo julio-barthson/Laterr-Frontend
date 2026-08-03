@@ -138,3 +138,45 @@
     @apply font-sans;
     }
 }
+
+/* Hero entrance.
+   ---------------------------------------------------------------------------
+   Deliberately CSS rather than GSAP, unlike the scroll work further down the
+   landing page. This runs above the fold on first paint: a JS-driven `from()`
+   would render the hero visible in the prerendered HTML, then blank it on
+   hydration and fade it back in — a flicker on fast connections and a real
+   flash on slow ones. CSS applies before the first paint, needs no hydration,
+   and degrades to "just visible" when the media query doesn't match.
+
+   Delays stay under ~0.35s in total on purpose: the h1 is a likely LCP
+   candidate, and a fully transparent element doesn't count as painted, so a
+   long delay here would push LCP out by that much. */
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes hero-rise {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    /* `backwards` holds the from-state through the delay, so nothing appears
+       before its turn. */
+    [data-hero-rise] > * {
+        animation: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    [data-hero-rise] > *:nth-child(1) { animation-delay: 0.05s; }
+    [data-hero-rise] > *:nth-child(2) { animation-delay: 0.12s; }
+    [data-hero-rise] > *:nth-child(3) { animation-delay: 0.19s; }
+    [data-hero-rise] > *:nth-child(4) { animation-delay: 0.26s; }
+    [data-hero-rise] > *:nth-child(5) { animation-delay: 0.33s; }
+
+    /* The floating "just now" card lands after the copy has settled. */
+    [data-hero-float] {
+        animation: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+    }
+}

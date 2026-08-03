@@ -44,12 +44,12 @@ const CARDS: Array<{
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
-      <p className="text-primary text-xs tracking-widest uppercase">
+      <p className="text-xs tracking-widest text-primary uppercase">
         Contact us
       </p>
-      <h1 className="font-heading mt-3 text-4xl md:text-6xl">Say hello.</h1>
-      <p className="text-muted-foreground mt-4 max-w-xl text-lg">
-        Questions, partnerships, or just a warm hi — we read every message.
+      <h1 className="mt-3 font-heading text-4xl md:text-6xl">Say hello.</h1>
+      <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+        Questions, partnerships, or just a warm hi, we read every message.
       </p>
 
       <div className="mt-12 grid gap-8 md:grid-cols-[1.2fr_1fr]">
@@ -59,19 +59,19 @@ export default function ContactPage() {
           {CARDS.map((card) => (
             <div
               key={card.title}
-              className="border-border/60 bg-secondary/40 rounded-2xl border p-5"
+              className="rounded-2xl border border-border/60 bg-secondary/40 p-5"
             >
-              <card.icon className="text-primary h-5 w-5" />
-              <p className="font-heading mt-3 text-lg">{card.title}</p>
+              <card.icon className="h-5 w-5 text-primary" />
+              <p className="mt-3 font-heading text-lg">{card.title}</p>
               {card.href ? (
                 <a
                   href={card.href}
-                  className="text-muted-foreground hover:text-foreground text-sm"
+                  className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   {card.body}
                 </a>
               ) : (
-                <p className="text-muted-foreground text-sm">{card.body}</p>
+                <p className="text-sm text-muted-foreground">{card.body}</p>
               )}
             </div>
           ))}
