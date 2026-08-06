@@ -26,7 +26,7 @@ export default function CookiesPage() {
         {
           heading: "Why they are exempt from consent",
           paragraphs: [
-            "Both are strictly necessary to deliver a service you have asked for — signing in. Under the UK PECR and the EU ePrivacy Directive, that category does not require consent. The notice you saw is informational.",
+            "Both are strictly necessary to deliver a service you have asked for, signing in. Under the UK PECR and the EU ePrivacy Directive, that category does not require consent. The notice you saw is informational.",
           ],
         },
         {

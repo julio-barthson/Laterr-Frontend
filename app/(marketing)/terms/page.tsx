@@ -43,7 +43,7 @@ export default function TermsPage() {
         {
           heading: "Bookings between you and your invitees",
           paragraphs: [
-            "Laterr provides the scheduling tool. Any agreement about what happens in a booked meeting is between you and your invitee — we are not a party to it.",
+            "Laterr provides the scheduling tool. Any agreement about what happens in a booked meeting is between you and your invitee, we are not a party to it.",
           ],
         },
         {

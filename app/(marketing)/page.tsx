@@ -420,7 +420,7 @@ export default function LandingPage() {
                 image: "/assets/images/persona-family.jpg",
                 alt: "A family sharing a moment around a tablet",
                 title: "Families & Enterprise",
-                body: "Shared calendars, executive itineraries, RSVPs and confidential mode — beautiful for the whole household or the whole company.",
+                body: "Shared calendars, executive itineraries, RSVPs and confidential mode, beautiful for the whole household or the whole company.",
               },
             ].map((persona) => (
               <div
