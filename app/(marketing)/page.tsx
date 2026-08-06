@@ -97,7 +97,7 @@ const STEPS: Step[] = [
     pill: "AI companion",
     title: "Warm follow-ups that feel human",
     body: "After a meeting, a match, or a flight, Laterr sends a gentle check-in with three smart replies ready. Never awkward. Never robotic.",
-    image: "/assets/images/workflow-chat-ui-laterr.png",
+    image: "/assets/images/chat-ui-laterr.png",
     alt: "An AI companion chat bubble asking a warm follow-up question",
     bullets: [
       "One-tap smart replies drafted for you",
